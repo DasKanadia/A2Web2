@@ -25,9 +25,16 @@
           
            
             top: 0px;
-            padding-bottom: 3px;
+            padding-bottom: 8px;
             height: 15%;
             text-align: center;
+
+            background-image: linear-gradient(to right, #8c2ede, #0d7d60);
+            background-size: 100%;
+
+            /*border-bottom-left-radius: 20% 10%;
+            border-bottom-right-radius: 20% 10%;*/
+
         }
         header, footer
         
@@ -37,7 +44,7 @@
         }
         footer {
            
-            
+            background-image: linear-gradient(to left, #8c2ede, #0d7d60);
             position: fixed;
             bottom: 0;
             width: 100%;
@@ -388,6 +395,21 @@
 
             font-size: 150%;
           }
+
+          .creditsHoverButton{
+            position: absolute;
+            top: 1%;
+            right: 5%;
+
+
+          }
+
+
+          .creditPopup{
+            display: none;
+        }
+
+        
        
     </style>
 
@@ -417,7 +439,19 @@
             <button class="header-div" id = "home">
                 Home
             </button>
+
         </div>
+        <div class = creditsHoverButton>
+            <button class="header-div" id="credits">
+                Credits
+            </button>
+                <div id="creditContents" class="creditPopup"> 
+                    <p>Rahpael K.</p>
+                    <p>Zachariah L.</p>
+                    <a href="https://github.com/Ruffles240/A2Web2"> GitHub Repo </a>
+                </div>            
+        </div>
+
     </header>
     <div id="popupElement"></div>
     <main>
