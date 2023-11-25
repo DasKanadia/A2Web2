@@ -163,32 +163,39 @@ addEventListener("DOMContentLoaded", async (event) =>{
 
       table.innerHTML="";
 
+      for(song of list){
+         var newRow = makeRow(table, song);
+        
+         table.appendChild(newRow);
+      }
+
+   }
+
+   function makeRow(table, song){
+
       var type= ''
 
-      for(song of list){
-         if(table.id ==="searchList"){
-            type = 'class= "addPlaylist playlist">Add';
+      if(table.id ==="searchList"){
+         type = 'class= "addPlaylist playlist">Add';
 
-         }
+      }
 
-         else if(table.id==="playlistTable"){
+      else if(table.id==="playlistTable"){
 
-            type = 'class= "removePlaylist">Remove';
+         type = 'class= "removePlaylist">Remove';
 
-         }
+      }
 
-         var newRow = document.createElement("tr");
-         var shortenedTitle= song.title.substring(0,24);
-         if(song.title.length>25){
-            shortenedTitle = shortenedTitle.substring(0, 23);
-            shortenedTitle += `<button type='button' class="titleEllipse" data-id = "${song.song_id}">`+ '&hellip;'+ '</button>';
-         }
+      var newRow = document.createElement("tr");
+      var shortenedTitle= song.title.substring(0,24);
+      if(song.title.length>25){
+         shortenedTitle = shortenedTitle.substring(0, 23);
+         shortenedTitle += `<button type='button' class="titleEllipse" data-id = "${song.song_id}">`+ '&hellip;'+ '</button>';
+      }
 
-         newRow.dataset.id = song.song_id;
-         newRow.innerHTML = `<td data-type = "title" data-id="${song.title}">${shortenedTitle}</td><td data-type = "artist" data-id= "${song.artist.name}">${song.artist.name}</td><td data-type = "genre" data-id="${song.genre.name}">${song.genre.name}</td><td data-type = "year" data-id = "${song.year}">${song.year}</td><td data-type = "button" ><button  type= 'button' data-id = '${song.song_id}' ${type} </button></td>`;
-        table.appendChild(newRow);
-     }
-
+      newRow.dataset.id = song.song_id;
+      newRow.innerHTML = `<td data-type = "title" data-id="${song.title}">${shortenedTitle}</td><td data-type = "artist" data-id= "${song.artist.name}">${song.artist.name}</td><td data-type = "genre" data-id="${song.genre.name}">${song.genre.name}</td><td data-type = "year" data-id = "${song.year}">${song.year}</td><td data-type = "button" ><button  type= 'button' data-id = '${song.song_id}' ${type} </button></td>`;
+      return newRow;
    }
 
    var tables = document.querySelectorAll('table');
@@ -203,6 +210,35 @@ addEventListener("DOMContentLoaded", async (event) =>{
                   return song.song_id == event.target.dataset.id});
                popupText(`${thisSong.title}`);
             }
+
+            const thisSong =music.find((song) =>{
+               return song.song_id == event.target.dataset.id}
+               );
+            if(event.target.classList.contains("addPlaylist")){
+               if(typeof (playlist.find((playlistSong) => 
+               {
+                  return playlistSong.song_id == event.target.dataset.id
+               }
+               )) !== 'undefined'){
+                  alert('This song is already in the playlist');
+               }
+               else{
+                  playlist.push(thisSong);
+   
+                  localStorage.setItem('playlist', JSON.stringify(playlist));
+                  populateTable(document.querySelector('#playlistTable'), playlist);
+               }
+            }
+            else if(event.target.classList.contains('removePlaylist')){
+               playlist = playlist.filter((song)=>{
+                  return !(thisSong.song_id == song.song_id);
+               })
+            }
+            else if(event.target.classList.contains('clearPlaylist')){
+               playlist = [];
+            }
+            localStorage.setItem('playlist', JSON.stringify(playlist));
+            populateTable(document.querySelector('#playlistTable'), playlist);
       }
    
    ));
@@ -257,50 +293,8 @@ addEventListener("DOMContentLoaded", async (event) =>{
       )
    })
 
-   const tbodies = document.querySelectorAll('table');
-   tbodies.forEach((table) =>{
-   
-   table.addEventListener('click', (event) =>{
-
-      if(event.target.type="button"){
-
-         const thisSong =music.find((song) =>{
-            return song.song_id == event.target.dataset.id}
-            );
-         if(event.target.classList.contains("addPlaylist")){
-            if(typeof (playlist.find((playlistSong) => 
-            {
-               return playlistSong.song_id == event.target.dataset.id
-            }
-            )) !== 'undefined'){
-
-               alert('This song is already in the playlist');
-            }
-            else{
-               playlist.push(thisSong);
-
-               localStorage.setItem('playlist', JSON.stringify(playlist));
-               populateTable(document.querySelector('#playlistTable'), playlist);
-
-            }
-         }
-         else if(event.target.classList.contains('removePlaylist')){
-
-            playlist = playlist.filter((song)=>{
-
-               return !(thisSong.song_id == song.song_id);
-            })
-         }
-         else if(event.target.classList.contains('clearPlaylist')){
-            playlist = [];
-         }
-         localStorage.setItem('playlist', JSON.stringify(playlist));
-         populateTable(document.querySelector('#playlistTable'), playlist);
-         }
-   }
-      
-   );})
-
+  
+ 
    function resetBoxes(resetted){
 
       resetted.forEach(function(option)
@@ -373,15 +367,6 @@ addEventListener("DOMContentLoaded", async (event) =>{
      return mostFreq;
 
    }
-
-
-
-
-
-
-
-
-
    /**
     * 
     * Place code below
